@@ -18,7 +18,7 @@ public class LoginServlet extends HttpServlet {
 
     IUserDAO userDAO = new UserDAO();
 
-    protected void doGet(HttpServletRequest request,
+    protected void doPost(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
 
         System.out.println("asdf");
