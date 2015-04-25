@@ -2,7 +2,6 @@ package at.ac.tuwien.big.we15.lab2.api.impl.controller;
 
 import at.ac.tuwien.big.we15.lab2.api.impl.DAO.IUserDAO;
 import at.ac.tuwien.big.we15.lab2.api.impl.DAO.impl.UserDAO;
-import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.User;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,29 +12,25 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(name = "Login", urlPatterns = {"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "Logout", urlPatterns = {"/logout"})
+public class LogoutServlet extends HttpServlet {
 
     IUserDAO userDAO = new UserDAO();
 
-    protected void doPost(HttpServletRequest request,
+    protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
 
-        System.out.println("asdf");
+        //false damit nur dann eine session zurueckgeliefert wird wenn es schon eine gibt
+        HttpSession session = request.getSession(false);
 
-        if (request.getServletPath().equals("/login")) {
+        //null wenn es keine aktuelle session gibt
+        if (session != null) {
 
             response.setCharacterEncoding("UTF-8");
 
-            HttpSession session = request.getSession();
-            User user = userDAO.getNewUser();
-
-            user.setName(request.getParameter("username"));
-            session.setAttribute("user", user);
-
             RequestDispatcher dispatcher =
                     getServletContext()
-                            .getRequestDispatcher("/jeopardy.jsp");
+                            .getRequestDispatcher("/login");
 
             dispatcher.forward(request, response);
         }

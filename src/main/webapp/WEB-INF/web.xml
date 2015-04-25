@@ -4,15 +4,6 @@
          version="3.0">
     <description>JeopardyAuswertung</description>
     <display-name>Auswertung</display-name>
-    <servlet>
-        <servlet-name>BigJeopardyServlet</servlet-name>
-        <servlet-class>at.ac.tuwien.big.we15.lab2.api.impl.controller.BigJeopardyServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>BigJeopardyServlet</servlet-name>
-        <url-pattern>/BigJeopardyServlet</url-pattern>
-    </servlet-mapping>
 
     <welcome-file-list>
         <welcome-file>login.jsp</welcome-file>
