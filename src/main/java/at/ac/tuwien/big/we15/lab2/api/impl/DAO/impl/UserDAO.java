@@ -1,10 +1,10 @@
 package at.ac.tuwien.big.we15.lab2.api.impl.DAO.impl;
 
 
-import at.ac.tuwien.big.we15.lab2.api.impl.DAO.IUserDAO;
+import at.ac.tuwien.big.we15.lab2.api.impl.DAO.IUserDao;
 import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.User;
 
-public class UserDAO implements IUserDAO {
+public class UserDAO implements IUserDao {
     public static int registeredUserCount = 0;
 
     @Override
