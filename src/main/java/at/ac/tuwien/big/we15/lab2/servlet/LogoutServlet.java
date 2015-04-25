@@ -1,5 +1,6 @@
 package at.ac.tuwien.big.we15.lab2.servlet;
 
+import at.ac.tuwien.big.we15.lab2.api.impl.DAO.IUserDAO;
 import at.ac.tuwien.big.we15.lab2.api.impl.DAO.impl.UserDAO;
 
 import javax.servlet.RequestDispatcher;
@@ -14,7 +15,7 @@ import java.io.IOException;
 @WebServlet(name = "Logout", urlPatterns = {"/logout"})
 public class LogoutServlet extends HttpServlet {
 
-    UserDAO userDAO = new UserDAO();
+    IUserDAO userDAO = new UserDAO();
 
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
