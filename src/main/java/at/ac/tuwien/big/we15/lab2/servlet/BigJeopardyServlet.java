@@ -1,4 +1,4 @@
-package at.ac.tuwien.big.we15.lab2.api.impl.controller;
+package at.ac.tuwien.big.we15.lab2.servlet;
 
 
         import at.ac.tuwien.big.we15.lab2.api.Answer;

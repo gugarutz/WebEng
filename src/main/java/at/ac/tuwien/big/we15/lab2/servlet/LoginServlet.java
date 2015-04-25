@@ -1,6 +1,5 @@
-package at.ac.tuwien.big.we15.lab2.api.impl.controller;
+package at.ac.tuwien.big.we15.lab2.servlet;
 
-import at.ac.tuwien.big.we15.lab2.api.impl.DAO.IUserDAO;
 import at.ac.tuwien.big.we15.lab2.api.impl.DAO.impl.UserDAO;
 import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.User;
 
@@ -16,7 +15,7 @@ import java.io.IOException;
 @WebServlet(name = "Login", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
 
-    IUserDAO userDAO = new UserDAO();
+    UserDAO userDAO = new UserDAO();
 
     protected void doPost(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
