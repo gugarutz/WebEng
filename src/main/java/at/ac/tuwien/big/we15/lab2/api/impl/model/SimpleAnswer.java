@@ -8,7 +8,7 @@
  *
  * </copyright>
  */
-package at.ac.tuwien.big.we15.lab2.api.impl;
+package at.ac.tuwien.big.we15.lab2.api.impl.model;
 
 import at.ac.tuwien.big.we15.lab2.api.Answer;
 import at.ac.tuwien.big.we15.lab2.api.Question;
