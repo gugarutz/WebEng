@@ -8,7 +8,7 @@
  *
  * </copyright>
  */
-package at.ac.tuwien.big.we15.lab2.api.impl.model;
+package at.ac.tuwien.big.we15.lab2.api.impl.model.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;

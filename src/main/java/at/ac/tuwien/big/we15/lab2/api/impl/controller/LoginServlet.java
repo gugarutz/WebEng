@@ -2,7 +2,7 @@ package at.ac.tuwien.big.we15.lab2.api.impl.controller;
 
 import at.ac.tuwien.big.we15.lab2.api.impl.DAO.IUserDAO;
 import at.ac.tuwien.big.we15.lab2.api.impl.DAO.impl.UserDAO;
-import at.ac.tuwien.big.we15.lab2.api.impl.model.User;
+import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.User;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -23,8 +23,7 @@ public class LoginServlet extends HttpServlet {
 
         System.out.println("asdf");
 
-        if (request.getParameter("action")
-                .equals("login")) {
+        if (request.getServletPath().equals("/login")) {
             HttpSession session = request.getSession();
             User user = userDAO.getNewUser();
 

@@ -15,7 +15,7 @@ import java.io.InputStream;
 import javax.servlet.ServletContext;
 
 import at.ac.tuwien.big.we15.lab2.api.QuestionDataProvider;
-import at.ac.tuwien.big.we15.lab2.api.impl.model.SimpleJeopardyFactory;
+import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.SimpleJeopardyFactory;
 
 public class ServletJeopardyFactory extends SimpleJeopardyFactory {
 

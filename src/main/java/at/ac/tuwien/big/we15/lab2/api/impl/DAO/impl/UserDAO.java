@@ -1,7 +1,7 @@
 package at.ac.tuwien.big.we15.lab2.api.impl.DAO.impl;
 
 import at.ac.tuwien.big.we15.lab2.api.impl.DAO.IUserDAO;
-import at.ac.tuwien.big.we15.lab2.api.impl.model.User;
+import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.User;
 
 public class UserDAO implements IUserDAO {
 

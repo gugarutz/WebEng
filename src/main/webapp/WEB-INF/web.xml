@@ -2,7 +2,23 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
-    <error-page>
-        <location>/error.html</location>
-    </error-page>
+    <description>JeopardyAuswertung</description>
+    <display-name>Auswertung</display-name>
+    <servlet>
+        <servlet-name>BigJeopardyServlet</servlet-name>
+        <servlet-class>at.ac.tuwien.big.we15.lab2.api.impl.controller.BigJeopardyServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>BigJeopardyServlet</servlet-name>
+        <url-pattern>/BigJeopardyServlet</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>login.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!--<error-page>-->
+    <!--<location>/error.html</location>-->
+    <!--</error-page>-->
 </web-app>
