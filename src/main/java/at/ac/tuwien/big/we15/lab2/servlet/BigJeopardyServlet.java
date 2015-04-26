@@ -70,6 +70,7 @@ public class BigJeopardyServlet extends HttpServlet {
         Player human = stats.getHuman();
         SelectableQuestion enemyQuestion = null;
         
+
         if(enemy.getMoney() >= human.getMoney())
         {
             //human hat bereits gewaehlt, enemy waehlt jetzt
@@ -93,6 +94,10 @@ public class BigJeopardyServlet extends HttpServlet {
 
         if(answers != null) {
             SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
+            SelectableQuestion enemyQuestion = chooseRandomQuestion();
+
+            PlayerStats stats = (PlayerStats)session.getAttribute("stats");
+            PlayerInfo info = (PlayerInfo) session.getAttribute("info");
 
             if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
                 human.addMoney(currentQuestion.getQuestion().getValue());
