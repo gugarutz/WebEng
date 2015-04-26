@@ -64,7 +64,7 @@
                   </tr>
                </table>
             </section>
-            <p id="round">Frage: <%= stats.getAskedQuestions() %> / 10</p>
+            <p id="round">Fragen: <%= stats.getAskedQuestions() %> / 10</p>
          </section>
             
       <!-- Question -->

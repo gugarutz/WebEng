@@ -74,13 +74,12 @@ public class BigJeopardyServlet extends HttpServlet {
         String[] answers = request.getParameterValues("answers");
         Question currentQuestion = (Question)session.getAttribute("currentQuestion");
 
-        if (checkCorrectness(currentQuestion.getAllAnswers(), answers)) {
-            Player human = (Player)session.getAttribute("human");
+        if (checkCorrectness(currentQuestion.getCorrectAnswers(), answers)) {
+            PlayerStats players = (PlayerStats)session.getAttribute("stats");
         }
 
         getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
     }
-
 
     private boolean checkCorrectness(List<Answer> aw, String[] ch) {
         boolean b = true;

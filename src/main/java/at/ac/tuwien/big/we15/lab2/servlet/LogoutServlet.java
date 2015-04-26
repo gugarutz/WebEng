@@ -15,27 +15,18 @@ import java.io.IOException;
 @WebServlet(name = "Logout", urlPatterns = {"/logout"})
 public class LogoutServlet extends HttpServlet {
 
-    IUserDao userDAO = new UserDAO();
-
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("logout: doGet called");
 
         //param false damit nur dann eine session zurueckgeliefert wird wenn es schon eine gibt
-        HttpSession session = request.getSession(false);
+        HttpSession session = req.getSession(false);
 
         //check ob es eine aktuelle session gibt
         if (session != null) {
-
-            session.invalidate();
-
-            response.setCharacterEncoding("UTF-8");
-
-            RequestDispatcher dispatcher =
-                    getServletContext()
-                            .getRequestDispatcher("/login");
-
-            dispatcher.forward(request, response);
+            session.setAttribute("stats", null);
         }
+
+        getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
     }
 }

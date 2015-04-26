@@ -27,6 +27,12 @@ public class LoginServlet extends HttpServlet {
         super.service(req, resp);
     }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doGet(req, resp);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("login: doPost called");
 
