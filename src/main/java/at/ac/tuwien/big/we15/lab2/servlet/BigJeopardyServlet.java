@@ -68,7 +68,7 @@ public class BigJeopardyServlet extends HttpServlet {
     // Question - get
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Jeopardy doGet called");
+        System.out.println("jeopardy: doGet called");
 
         HttpSession session = request.getSession(false);
         String[] answers = request.getParameterValues("answers");
