@@ -67,7 +67,7 @@ public class BigJeopardyServlet extends HttpServlet {
         PlayerStats stats = (PlayerStats)session.getAttribute("stats");
         Player enemy = stats.getEnemy();
         Player human = stats.getHuman();
-        
+
         if(enemy.getMoney() >= human.getMoney())
         {
             //human hat bereits gewählt, enemy wählt jetzt
