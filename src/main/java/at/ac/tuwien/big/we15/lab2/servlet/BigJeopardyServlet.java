@@ -84,7 +84,7 @@ public class BigJeopardyServlet extends HttpServlet {
                 info.getEnemyInfo().setCorrect(false);
             }
             if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
-                human.setMoney(currentQuestion.getQuestion().getValue());
+                human.addMoney(currentQuestion.getQuestion().getValue());
                 info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
             } else {
                 info.getHumanInfo().setCorrect(false);

@@ -80,7 +80,7 @@ public class LoginServlet extends HttpServlet {
 
             session.setAttribute("categories", categoryList);
             session.setAttribute("stats", stats);
-            session.setAttribute("info", new PlayerInfo(human.getName(), enemy.getName()));
+            session.setAttribute("info", new PlayerInfo("Du", enemy.getName()));
 
             getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
         }
