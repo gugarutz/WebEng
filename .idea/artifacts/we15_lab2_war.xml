@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="war" name="we15-lab2:war">
+  <artifact type="war" build-on-make="true" name="we15-lab2:war">
     <output-path>$PROJECT_DIR$/target</output-path>
     <root id="archive" name="we15-lab2-0.0.1-SNAPSHOT.war">
       <element id="artifact" artifact-name="we15-lab2:war exploded" />

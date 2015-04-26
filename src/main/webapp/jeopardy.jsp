@@ -1,4 +1,5 @@
-<jsp:useBean id="points" class="at.ac.tuwien.big.we15.lab2.api.impl.model.impl.User" scope="session" />
+<jsp:useBean id="stats" class="at.ac.tuwien.big.we15.lab2.api.impl.model.impl.PlayerStats" scope="session" />
+
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
@@ -35,33 +36,33 @@
       <h2 id="gameinfoinfoheading" class="accessibility">Spielinformationen</h2>
       <section id="firstplayer" class="playerinfo leader" aria-labelledby="firstplayerheading">
          <h3 id="firstplayerheading" class="accessibility">Führender Spieler</h3>
-         <img class="avatar" src="img/avatar/black-widow_head.png" alt="Spieler-Avatar Black Widow" />
+         <img class="avatar" src="img/avatar/<%= stats.getHuman().getAvatar().getImageHead() %>" alt="Spieler-Avatar <%= stats.getHuman().getAvatar().getName() %>" />
          <table>
             <tr>
                <th class="accessibility">Spielername</th>
-               <td class="playername">Black Widow (Du)</td>
+               <td class="playername"><%= stats.getHuman().getName() %> (Du)</td>
             </tr>
             <tr>
                <th class="accessibility">Spielerpunkte</th>
-               <td class="playerpoints"><%= points.getPoints() %></td>
+               <td class="playerpoints"><%= stats.getHuman().getMoney() %></td>
             </tr>
          </table>
       </section>
       <section id="secondplayer" class="playerinfo" aria-labelledby="secondplayerheading">
          <h3 id="secondplayerheading" class="accessibility">Zweiter Spieler</h3>
-         <img class="avatar" src="img/avatar/deadpool_head.png" alt="Spieler-Avatar Deadpool" />
+         <img class="avatar" src="img/avatar/<%= stats.getEnemy().getAvatar().getImageHead()%>" alt="Spieler-Avatar <%= stats.getEnemy().getAvatar().getName() %>" />
          <table>
             <tr>
                <th class="accessibility">Spielername</th>
-               <td class="playername">Deadpool</td>
+               <td class="playername"><%= stats.getEnemy().getAvatar().getName()%></td>
             </tr>
             <tr>
                <th class="accessibility">Spielerpunkte</th>
-               <td class="playerpoints">400 €</td>
+               <td class="playerpoints"><%= stats.getEnemy().getMoney() %> €</td>
             </tr>
          </table>
       </section>
-      <p id="round">Fragen: 2 / 10</p>
+      <p id="round">Fragen: <%= stats.getAskedQuestions() %> / 10</p>
    </section>
 
    <!-- Question -->
@@ -70,7 +71,7 @@
       <p class="user-info positive-change">Du hast richtig geantwortet: +1000 €</p>
       <p class="user-info negative-change">Deadpool hat falsch geantwortet: -500 €</p>
       <p class="user-info">Deadpool hat TUWIEN für € 1000 gewählt.</p>
-      <form id="questionform" action="BigJeopardyServlet" method="post">
+      <form id="questionform" action="jeopardy" method="post">
          <fieldset>
             <legend class="accessibility">Fragenauswahl</legend>
             <section class="questioncategory" aria-labelledby="tvheading">

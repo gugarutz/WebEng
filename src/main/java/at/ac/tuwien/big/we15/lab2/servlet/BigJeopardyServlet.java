@@ -6,10 +6,13 @@ import at.ac.tuwien.big.we15.lab2.api.Question;
 import at.ac.tuwien.big.we15.lab2.api.QuestionDataProvider;
 import at.ac.tuwien.big.we15.lab2.api.impl.QuestionPool;
 import at.ac.tuwien.big.we15.lab2.api.impl.ServletJeopardyFactory;
-import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.User;
+import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.Player;
+import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.PlayerStats;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,66 +24,61 @@ import java.util.List;
 /**
  * Created by Marc on 24.04.15.
  */
-@WebServlet(name = "BigJeopardyServlet", urlPatterns = {"/BigJeopardyServlet", "/question"})
+@WebServlet(name = "BigJeopardyServlet", urlPatterns = {"/jeopardy", "/question"})
 public class BigJeopardyServlet extends HttpServlet {
     private ServletJeopardyFactory factory;
     private QuestionDataProvider dataProvider;
     private QuestionPool questionPool;
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Jeopardy service called");
-
+    public void init() throws ServletException {
         factory = new ServletJeopardyFactory(this.getServletContext());
         dataProvider = factory.createQuestionDataProvider();
         questionPool = new QuestionPool(dataProvider.getCategoryData());
-        super.service(request, resp);
+
+        super.init();
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Jeopardy doPost called");
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if(req.getSession(true).getAttribute("stats") == null)
+            getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
 
-        HttpSession session = request.getSession(true);
-        RequestDispatcher dispatcher = null;
-
-        String target = "/login";
-
-        if (session != null) {
-            if (request.getServletPath().equals("/question")) {
-
-                int questionId = Integer.parseInt(request.getParameter("question_selection"));
-                Question question = questionPool.getQuestion(questionId);
-
-                target = "/question.jsp";
-
-                session.setAttribute("question", question);
-            }
-            else {
-                target = "/jeopardy.jsp";
-            }
-        }
-
-        dispatcher = getServletContext().getRequestDispatcher(target);
-
-        dispatcher.forward(request, response);
+        super.service(req, resp);
     }
 
+    // Jeopardy - Post
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("BigJeopardyServlet doPost called");
+
+        HttpSession session = request.getSession(false);
+        String selectedQuestion = request.getParameter("question_selection");
+
+        if(selectedQuestion != null) {
+            int questionId = Integer.parseInt(request.getParameter("question_selection"));
+            Question question = questionPool.getQuestion(questionId);
+
+            session.setAttribute("currentQuestion", question);
+
+            getServletContext().getRequestDispatcher("/question.jsp").forward(request, response);
+        }
+    }
+
+    // Question - get
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("Jeopardy doGet called");
 
-        HttpSession session = request.getSession(true);
-        RequestDispatcher dispatcher = null;
+        HttpSession session = request.getSession(false);
+        String[] answers = request.getParameterValues("answers");
+        Question currentQuestion = (Question)session.getAttribute("currentQuestion");
 
-        String target = "/login";
+        if (checkCorrectness(currentQuestion.getAllAnswers(), answers)) {
+            Player human = (Player)session.getAttribute("human");
+        }
 
-        if (session != null)
-            target = "/jeopardy.jsp";
-
-        dispatcher = getServletContext().getRequestDispatcher(target);
-
-        dispatcher.forward(request, response);
+        getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
     }
 
 
