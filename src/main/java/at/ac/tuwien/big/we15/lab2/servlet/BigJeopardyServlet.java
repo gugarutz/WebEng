@@ -94,10 +94,7 @@ public class BigJeopardyServlet extends HttpServlet {
 
         if(answers != null) {
             SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
-            SelectableQuestion enemyQuestion = chooseRandomQuestion();
-
-            PlayerStats stats = (PlayerStats)session.getAttribute("stats");
-            PlayerInfo info = (PlayerInfo) session.getAttribute("info");
+            enemyQuestion = chooseRandomQuestion();
 
             if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
                 human.addMoney(currentQuestion.getQuestion().getValue());
