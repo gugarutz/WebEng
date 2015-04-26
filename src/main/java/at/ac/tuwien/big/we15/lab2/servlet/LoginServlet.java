@@ -19,9 +19,9 @@ public class LoginServlet extends HttpServlet {
     IUserDao userDAO = new UserDAO();
 
     protected void doPost(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
+                          HttpServletResponse response) throws ServletException, IOException {
 
-        System.out.println("asdf");
+        System.out.println("login: doPost called");
 
         if (request.getServletPath().equals("/login")) {
 
@@ -35,7 +35,30 @@ public class LoginServlet extends HttpServlet {
 
             RequestDispatcher dispatcher =
                     getServletContext()
-                            .getRequestDispatcher("/jeopardy.jsp");
+                            .getRequestDispatcher("/BigJeopardyServlet");
+
+            dispatcher.forward(request, response);
+        }
+    }
+
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response) throws ServletException, IOException {
+
+        System.out.println("login: doGet called");
+
+        String redirectResource = "/login.jsp";
+
+        if (request.getServletPath().equals("/login")) {
+
+            if (request.getSession(false) != null) {
+                redirectResource = "/BigJeopardyServlet";
+            }
+
+            response.setCharacterEncoding("UTF-8");
+
+            RequestDispatcher dispatcher =
+                    getServletContext()
+                            .getRequestDispatcher(redirectResource);
 
             dispatcher.forward(request, response);
         }
