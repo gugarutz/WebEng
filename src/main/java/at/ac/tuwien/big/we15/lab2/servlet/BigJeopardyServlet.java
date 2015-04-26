@@ -78,18 +78,16 @@ public class BigJeopardyServlet extends HttpServlet {
             if(checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(),KI(currentQuestion.getQuestion().getAllAnswers(),currentQuestion.getQuestion().getCorrectAnswers().size())))
             {
                 enemy.addMoney(currentQuestion.getQuestion().getValue());
-                info.setEnemyInfo(true, currentQuestion.getQuestion().getValue());
+                info.setEnemyInfo(true,currentQuestion.getQuestion().getValue());
             }
             else {
                 info.getEnemyInfo().setCorrect(false);
-                enemy.addMoney(currentQuestion.getQuestion().getValue()*-1);
             }
             if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
                 human.addMoney(currentQuestion.getQuestion().getValue());
                 info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
             } else {
-                human.addMoney(currentQuestion.getQuestion().getValue()*-1);
-                info.getHumanInfo().setCorrect(false);
+                info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
             }
 
             stats.setAskedQuestions(stats.getAskedQuestions() + 1);
@@ -98,7 +96,7 @@ public class BigJeopardyServlet extends HttpServlet {
         }
     }
 
-    //Methode zum Ã¼berprÃ¼fen der gewÃ¤hlten antworten
+    //Methode zum überprüfen der gewählten antworten
     private boolean checkCorrectness(List<Answer> aw, String[] ch) {
         boolean b = true;
         if (aw.size() == ch.length) {
