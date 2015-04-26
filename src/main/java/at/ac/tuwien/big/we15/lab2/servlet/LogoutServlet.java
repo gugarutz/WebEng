@@ -19,6 +19,7 @@ public class LogoutServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("logout: doGet called");
 
         //false damit nur dann eine session zurueckgeliefert wird wenn es schon eine gibt
         HttpSession session = request.getSession(false);

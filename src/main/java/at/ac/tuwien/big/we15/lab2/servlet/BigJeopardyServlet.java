@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by Marc on 24.04.15.
  */
-@WebServlet(name = "BigJeopardyServlet", urlPatterns = {"/BigJeopardyServlet"})
+@WebServlet(name = "BigJeopardyServlet", urlPatterns = {"/BigJeopardyServlet", "/question"})
 public class BigJeopardyServlet extends HttpServlet {
     private ServletJeopardyFactory factory;
     private QuestionDataProvider dataProvider;
@@ -44,13 +44,19 @@ public class BigJeopardyServlet extends HttpServlet {
         HttpSession session = request.getSession(true);
         RequestDispatcher dispatcher = null;
 
-        if (request.getServletPath().equals("/BigJeopardyServlet")) {
-/*
+        String target = "/jeopardy.jsp";
+
+        if (request.getServletPath().equals("/question")) {
+
             int questionId = Integer.parseInt(request.getParameter("question_selection"));
             Question question = questionPool.getQuestion(questionId);
-            */dispatcher = getServletContext().getRequestDispatcher("/question.jsp");/*
-            session.setAttribute("question", question);*/
+
+            target = "/question.jsp";
+
+            session.setAttribute("question", question);
         }
+
+        dispatcher = getServletContext().getRequestDispatcher(target);
 
         dispatcher.forward(request, response);
     }
@@ -62,18 +68,12 @@ public class BigJeopardyServlet extends HttpServlet {
         HttpSession session = request.getSession(true);
         RequestDispatcher dispatcher = null;
 
-        if (request.getServletPath().equals("/question")) {
-            /*
-            Question question = (Question) session.getAttribute("question");
-            List<Answer> correctAnswers = question.getCorrectAnswers();
-            */dispatcher = getServletContext().getRequestDispatcher("/jeopardy.jsp");/*
-            String[] choosenAnswers = request.getParameterValues("answers");
-            if (checkCorrectness(correctAnswers, choosenAnswers)) {
-                session.setAttribute("points", new User(question.getValue()));
-            }
-*/
-        }
+        String target = "/login";
 
+        if (session != null)
+            target = "/jeopardy.jsp";
+
+        dispatcher = getServletContext().getRequestDispatcher(target);
 
         dispatcher.forward(request, response);
     }
