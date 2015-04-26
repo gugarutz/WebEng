@@ -2,6 +2,8 @@ package at.ac.tuwien.big.we15.lab2.api.impl;
 
 import at.ac.tuwien.big.we15.lab2.api.Category;
 import at.ac.tuwien.big.we15.lab2.api.Question;
+import at.ac.tuwien.big.we15.lab2.api.SelectableQuestion;
+import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.CategoryBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,29 +14,29 @@ import java.util.stream.Collectors;
  */
 public class QuestionPool {
 
-    private List<Question> qlist;
+    private List<SelectableQuestion> qlist;
 
-    public QuestionPool(List<Category> categories) {
+    public QuestionPool(List<CategoryBean> categories) {
 
         qlist = new ArrayList<>();
-        for (Category c : categories) {
+        for (CategoryBean c : categories) {
             qlist.addAll(c.getQuestions());
         }
     }
 
-    public List<Question> getQlist() {
+    public List<SelectableQuestion> getQlist() {
         return qlist;
     }
 
-    public void setQlist(List<Question> qlist) {
+    public void setQlist(List<SelectableQuestion> qlist) {
         this.qlist = qlist;
     }
 
-    public Question getQuestion(int ID) {
-        // List<Question> question = qlist.stream().filter(f -> f.getId() == ID).collect(Collectors.toList());
-        Question question = null;
-        for (Question q : qlist) {
-            if (q.getId() == ID) {
+    public SelectableQuestion getQuestion(int ID) {
+        SelectableQuestion question = null;
+        
+        for (SelectableQuestion q : qlist) {
+            if (q.getQuestion().getId() == ID) {
                 question = q;
             }
         }

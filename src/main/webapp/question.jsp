@@ -1,6 +1,6 @@
 <%@ page import="at.ac.tuwien.big.we15.lab2.api.Answer" %>
 <jsp:useBean id="stats" class="at.ac.tuwien.big.we15.lab2.api.impl.model.impl.PlayerStats" scope="session" />
-<jsp:useBean id="currentQuestion" class="at.ac.tuwien.big.we15.lab2.api.impl.model.impl.SimpleQuestion" scope="session" />
+<jsp:useBean id="currentQuestion" class="at.ac.tuwien.big.we15.lab2.api.impl.model.impl.SimpleSelectableQuestion" scope="session" />
 
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
@@ -46,7 +46,7 @@
                   </tr>
                   <tr>
                      <th class="accessibility">Spielerpunkte</th>
-                     <td class="playerpoints"><%= stats.getHuman().getMoney() %> €</td>
+                     <td class="playerpoints"><%= stats.getHuman().getMoney() %> &euro;</td>
                   </tr>
                </table>
             </section>
@@ -60,7 +60,7 @@
                   </tr>
                   <tr>
                      <th class="accessibility">Spielerpunkte</th>
-                     <td class="playerpoints"><%= stats.getEnemy().getMoney() %> €</td>
+                     <td class="playerpoints"><%= stats.getEnemy().getMoney() %>  &euro;</td>
                   </tr>
                </table>
             </section>
@@ -71,10 +71,10 @@
       <section id="question" aria-labelledby="questionheading">
             <form id="questionform" action="jeopardy" method="get">
                <h2 id="questionheading" class="accessibility">Frage</h2>
-               <p id="questiontype"><%= String.format("%s für &euro; %s", currentQuestion.getCategory().getName(), currentQuestion.getValue() )%></p>
-               <p id="questiontext"><%= currentQuestion.getText() %></p>
+               <p id="questiontype"><%= String.format("%s f&uuml;r &euro; %s", currentQuestion.getQuestion().getCategory().getName(), currentQuestion.getQuestion().getValue() )%></p>
+               <p id="questiontext"><%= currentQuestion.getQuestion().getText() %></p>
                <ul id="answers">
-                   <% for(Answer a : currentQuestion.getAllAnswers()) { %>
+                   <% for(Answer a : currentQuestion.getQuestion().getAllAnswers()) { %>
                     <li><input name="answers" id="<%= String.format("answer_%s", a.getId())%>" value="<%= a.getId() %>" type="checkbox"/><label class="tile clickable" for="<%= String.format("answer_%s", a.getId())%>"><%= a.getText() %></label></li>
                    <% } %>
                </ul>
@@ -91,7 +91,7 @@
       </div>
 
       <!-- footer -->
-      <footer role="contentinfo">© 2015 BIG Jeopardy!</footer>
+      <footer role="contentinfo">&copy; 2015 BIG Jeopardy!</footer>
         
       <script type="text/javascript">
             //<![CDATA[
