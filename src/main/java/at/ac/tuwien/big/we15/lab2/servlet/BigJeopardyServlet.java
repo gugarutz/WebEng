@@ -99,12 +99,14 @@ public class BigJeopardyServlet extends HttpServlet {
         SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
         enemyQuestion = chooseRandomQuestion();
 
-        if (answers != null && checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
-            human.addMoney(currentQuestion.getQuestion().getValue());
-            info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
-        } else {
-            info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
-            human.addMoney(currentQuestion.getQuestion().getValue()*-1);
+        if(!currentQuestion.isDisabled()) {
+            if (answers != null && checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
+                human.addMoney(currentQuestion.getQuestion().getValue());
+                info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
+            } else {
+                info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
+                human.addMoney(currentQuestion.getQuestion().getValue() * -1);
+            }
         }
 
         enemyQuestion = (SelectableQuestion) session.getAttribute("currentEnemyQuestion");
