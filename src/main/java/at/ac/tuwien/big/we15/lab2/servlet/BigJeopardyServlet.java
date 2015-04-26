@@ -75,16 +75,16 @@ public class BigJeopardyServlet extends HttpServlet {
             Player enemy = stats.getEnemy();
             Player human = stats.getHuman();
 
+            if(human.getMoney() <= enemy.getMoney()) {
+
+            }
+
             if(checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(),KI(currentQuestion.getQuestion().getAllAnswers(),currentQuestion.getQuestion().getCorrectAnswers().size())))
             {
-                enemy.setMoney(currentQuestion.getQuestion().getValue());
+                enemy.addMoney(currentQuestion.getQuestion().getValue());
                 info.setEnemyInfo(true,currentQuestion.getQuestion().getValue());
-            }
-            if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
-                human.addMoney(currentQuestion.getQuestion().getValue());
-                info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
             } else {
-                info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
+                info.setEnemyInfo(false, currentQuestion.getQuestion().getValue());
             }
 
             stats.setAskedQuestions(stats.getAskedQuestions() + 1);
