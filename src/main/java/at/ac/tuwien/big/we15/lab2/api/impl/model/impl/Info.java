@@ -53,8 +53,10 @@ public class Info {
 
     @Override
     public String toString() {
-        return money > 0 ?
+        String text = money > 0 ?
                 String.format("%s %s %s geantwortet: %s %s &euro;", name, human ? "hast" : "hat", correct ? "richtig" : "falsch", correct ? "+" : "-", money) :
                 String.format("%s %s noch nichts beantwortet.", name, human ? "hast" : "hat");
+
+        return text;
     }
 }

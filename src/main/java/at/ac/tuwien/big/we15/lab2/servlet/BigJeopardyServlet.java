@@ -60,6 +60,8 @@ public class BigJeopardyServlet extends HttpServlet {
                 getServletContext().getRequestDispatcher("/question.jsp").forward(request, response);
             }
         }
+
+        super.doPost(request, response);
     }
 
     // Question - get
