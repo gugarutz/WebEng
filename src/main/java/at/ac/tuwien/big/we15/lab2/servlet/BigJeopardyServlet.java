@@ -80,11 +80,14 @@ public class BigJeopardyServlet extends HttpServlet {
                 enemy.setMoney(currentQuestion.getQuestion().getValue());
                 info.setEnemyInfo(true,currentQuestion.getQuestion().getValue());
             }
+            else {
+                info.getEnemyInfo().setCorrect(false);
+            }
             if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
                 human.setMoney(currentQuestion.getQuestion().getValue());
                 info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
             } else {
-                info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
+                info.getHumanInfo().setCorrect(false);
             }
 
             stats.setAskedQuestions(stats.getAskedQuestions() + 1);
@@ -93,6 +96,7 @@ public class BigJeopardyServlet extends HttpServlet {
         }
     }
 
+    //Methode zum überprüfen der gewählten antworten
     private boolean checkCorrectness(List<Answer> aw, String[] ch) {
         boolean b = true;
         if (aw.size() == ch.length) {
@@ -108,6 +112,7 @@ public class BigJeopardyServlet extends HttpServlet {
         return b;
     }
 
+    // methode erzeugt computergenerierte Antworten
     private String[] KI (List<Answer> allPossible,int anzrichtigeantworten) {
 
         List<String> gewaehlt = new ArrayList<String>();
