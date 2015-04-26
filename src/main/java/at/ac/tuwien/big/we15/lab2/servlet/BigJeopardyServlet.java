@@ -74,74 +74,80 @@ public class BigJeopardyServlet extends HttpServlet {
         PlayerInfo info = (PlayerInfo) session.getAttribute("info");
         Player enemy = stats.getEnemy();
         Player human = stats.getHuman();
-        SelectableQuestion enemyQuestion = null;
 
-        if(enemy.getMoney() >= human.getMoney())
-        {
-            //human hat bereits gewaehlt, enemy waehlt jetzt
+        if(stats.getAskedQuestions() < 10) {
+            SelectableQuestion enemyQuestion = null;
+
+            if (enemy.getMoney() >= human.getMoney()) {
+                //human hat bereits gewaehlt, enemy waehlt jetzt
+                enemyQuestion = chooseRandomQuestion();
+
+                if (checkCorrectness(enemyQuestion.getQuestion().getCorrectAnswers(), KI(enemyQuestion))) {
+                    enemy.addMoney(enemyQuestion.getQuestion().getValue());
+                    info.setEnemyInfo(true, enemyQuestion.getQuestion().getValue());
+                } else {
+                    info.setEnemyInfo(false, enemyQuestion.getQuestion().getValue());
+                    enemy.addMoney(enemyQuestion.getQuestion().getValue() * -1);
+                }
+
+                // frage disable setzen
+                enemyQuestion.setDisabled(true);
+            }
+
+            String[] answers = request.getParameterValues("answers");
+
+            SelectableQuestion currentQuestion = (SelectableQuestion) session.getAttribute("currentQuestion");
             enemyQuestion = chooseRandomQuestion();
 
-            if (checkCorrectness(enemyQuestion.getQuestion().getCorrectAnswers(), KI(enemyQuestion)))
-            {
-                enemy.addMoney(enemyQuestion.getQuestion().getValue());
-                info.setEnemyInfo(true, enemyQuestion.getQuestion().getValue());
+            if (!currentQuestion.isDisabled()) {
+                if (answers != null && checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
+                    human.addMoney(currentQuestion.getQuestion().getValue());
+                    info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
+                } else {
+                    info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
+                    human.addMoney(currentQuestion.getQuestion().getValue() * -1);
+                }
+
+                currentQuestion.setDisabled(true);
             }
-            else {
-                info.setEnemyInfo(false, enemyQuestion.getQuestion().getValue());
-                enemy.addMoney(enemyQuestion.getQuestion().getValue() * -1);
+
+            enemyQuestion = (SelectableQuestion) session.getAttribute("currentEnemyQuestion");
+
+            if (enemyQuestion != null) {
+                if (checkCorrectness(enemyQuestion.getQuestion().getCorrectAnswers(), KI(enemyQuestion))) {
+                    enemy.addMoney(enemyQuestion.getQuestion().getValue());
+                    info.setEnemyInfo(true, enemyQuestion.getQuestion().getValue());
+                } else {
+                    info.setEnemyInfo(false, enemyQuestion.getQuestion().getValue());
+                    enemy.addMoney(enemyQuestion.getQuestion().getValue() * -1);
+                }
             }
 
-            // frage disable setzen
-            enemyQuestion.setDisabled(true);
-        }
+            // zuruecksetzen
+            session.setAttribute("currentEnemyQuestion", null);
 
-        String[] answers = request.getParameterValues("answers");
+            //hier checken wir ob PC - money kleiner ist als human money
+            if (enemy.getMoney() < human.getMoney()) {
+                //enemy waehlt random frage, erst dann waehlt human
+                enemyQuestion = chooseRandomQuestion();
 
-        SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
-        enemyQuestion = chooseRandomQuestion();
+                enemyQuestion.setDisabled(true);
 
-        if(!currentQuestion.isDisabled()) {
-            if (answers != null && checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
-                human.addMoney(currentQuestion.getQuestion().getValue());
-                info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
+                session.setAttribute("currentEnemyQuestion", enemyQuestion);
+            }
+
+            info.setEnemyChosenQuestion(enemyQuestion);
+            stats.setAskedQuestions(stats.getAskedQuestions() + 1);
+        } else {
+            if(enemy.getMoney() >= human.getMoney()) {
+                info.getEnemyInfo().setWinner();
             } else {
-                info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
-                human.addMoney(currentQuestion.getQuestion().getValue() * -1);
-            }
-
-            currentQuestion.setDisabled(true);
-        }
-
-        enemyQuestion = (SelectableQuestion) session.getAttribute("currentEnemyQuestion");
-
-        if(enemyQuestion != null) {
-            if (checkCorrectness(enemyQuestion.getQuestion().getCorrectAnswers(), KI(enemyQuestion))) {
-                enemy.addMoney(enemyQuestion.getQuestion().getValue());
-                info.setEnemyInfo(true, enemyQuestion.getQuestion().getValue());
-            } else {
-                info.setEnemyInfo(false, enemyQuestion.getQuestion().getValue());
-                enemy.addMoney(enemyQuestion.getQuestion().getValue() * -1);
+                info.getHumanInfo().setWinner();
             }
         }
-
-        // zuruecksetzen
-        session.setAttribute("currentEnemyQuestion", null);
-
-        //hier checken wir ob PC - money kleiner ist als human money
-        if(enemy.getMoney() < human.getMoney())
-        {
-            //enemy waehlt random frage, erst dann waehlt human
-            enemyQuestion = chooseRandomQuestion();
-
-            enemyQuestion.setDisabled(true);
-
-            session.setAttribute("currentEnemyQuestion", enemyQuestion);
-        }
-
-        info.setEnemyChosenQuestion(enemyQuestion);
-        stats.setAskedQuestions(stats.getAskedQuestions() + 1);
 
         getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
+        super.doGet(request, response);
     }
 
     //Methode zum ueberpruefen der gewaehlten antworten, aw => correct, ch => answered

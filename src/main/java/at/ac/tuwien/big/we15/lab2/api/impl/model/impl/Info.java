@@ -6,6 +6,7 @@ package at.ac.tuwien.big.we15.lab2.api.impl.model.impl;
 public class Info {
     private boolean correct;
     private boolean human;
+    private boolean winner;
     private int money;
     private String name;
 
@@ -17,6 +18,14 @@ public class Info {
         this.human = human;
         this.money = money;
         this.name = name;
+    }
+
+    public boolean isWinner() {
+        return winner;
+    }
+
+    public void setWinner() {
+        this.winner = true;
     }
 
     public boolean isCorrect() {
@@ -56,6 +65,8 @@ public class Info {
         String text = money > 0 ?
                 String.format("%s %s %s geantwortet: %s %s &euro;", name, human ? "hast" : "hat", correct ? "richtig" : "falsch", correct ? "+" : "-", money) :
                 String.format("%s %s noch nichts beantwortet.", name, human ? "hast" : "hat");
+
+        text = winner ? String.format("%s %s gewonnen.", name, human ? "hast" : "hat") : text;
 
         return text;
     }
