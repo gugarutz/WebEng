@@ -53,7 +53,6 @@ public class BigJeopardyServlet extends HttpServlet {
             if(selectedQuestion != null) {
                 int questionId = Integer.parseInt(request.getParameter("question_selection"));
                 SelectableQuestion question = questionPool.getQuestion(questionId);
-                question.setDisabled(true);
 
                 session.setAttribute("currentQuestion", question);
 
@@ -109,6 +108,8 @@ public class BigJeopardyServlet extends HttpServlet {
                 info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
                 human.addMoney(currentQuestion.getQuestion().getValue() * -1);
             }
+
+            currentQuestion.setDisabled(true);
         }
 
         enemyQuestion = (SelectableQuestion) session.getAttribute("currentEnemyQuestion");
