@@ -6,6 +6,7 @@ import at.ac.tuwien.big.we15.lab2.api.impl.QuestionPool;
 import at.ac.tuwien.big.we15.lab2.api.impl.ServletJeopardyFactory;
 import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.*;
 
+import java.util.ArrayList;
 import java.util.Random;
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
@@ -74,6 +75,11 @@ public class BigJeopardyServlet extends HttpServlet {
             Player enemy = stats.getEnemy();
             Player human = stats.getHuman();
 
+            if(checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(),KI(currentQuestion.getQuestion().getAllAnswers(),currentQuestion.getQuestion().getCorrectAnswers().size())))
+            {
+                enemy.setMoney(currentQuestion.getQuestion().getValue());
+                info.setEnemyInfo(true,currentQuestion.getQuestion().getValue());
+            }
             if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
                 human.setMoney(currentQuestion.getQuestion().getValue());
                 info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
@@ -103,12 +109,25 @@ public class BigJeopardyServlet extends HttpServlet {
     }
 
     private String[] KI (List<Answer> allPossible,int anzrichtigeantworten) {
-        String[] gewaehlt = new String[anzrichtigeantworten];
+
+        List<String> gewaehlt = new ArrayList<String>();
         Random randy = new Random();
-        for(int rand = 0 ; rand < anzrichtigeantworten; rand ++)
+        while(gewaehlt.size() != anzrichtigeantworten)
         {
-            gewaehlt[rand] = (allPossible.get(randy.nextInt(allPossible.size())).getId() + "");
+            int zufall = randy.nextInt(allPossible.size());
+            if(zufall == 0)
+            {
+                zufall ++;
+            }
+            String addit = (zufall+"");
+            if(!gewaehlt.contains(addit))
+            {
+                gewaehlt.add(addit);
+            }
         }
-        return gewaehlt;
+        String[] forreturn = new String[gewaehlt.size()];
+        gewaehlt.toArray(forreturn);
+        return forreturn;
+
     }
 }
