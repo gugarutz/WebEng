@@ -65,31 +65,15 @@ public class BigJeopardyServlet extends HttpServlet {
         System.out.println("jeopardy: doGet called");
         HttpSession session = request.getSession(false);
         PlayerStats stats = (PlayerStats)session.getAttribute("stats");
+        PlayerInfo info = (PlayerInfo) session.getAttribute("info");
         Player enemy = stats.getEnemy();
         Player human = stats.getHuman();
+        SelectableQuestion enemyQuestion = null;
         
         if(enemy.getMoney() >= human.getMoney())
         {
-            //human hat bereits gewählt, enemy wählt jetzt
-
-        }
-
-        String[] answers = request.getParameterValues("answers");
-
-        if(answers != null) {
-            SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
-            SelectableQuestion enemyQuestion = chooseRandomQuestion();
-
-            PlayerStats stats = (PlayerStats)session.getAttribute("stats");
-            PlayerInfo info = (PlayerInfo) session.getAttribute("info");
-
-            if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
-                human.addMoney(currentQuestion.getQuestion().getValue());
-                info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
-            } else {
-                info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
-                human.addMoney(currentQuestion.getQuestion().getValue()*-1);
-            }
+            //human hat bereits gewaehlt, enemy waehlt jetzt
+            enemyQuestion = chooseRandomQuestion();
 
             if (checkCorrectness(enemyQuestion.getQuestion().getCorrectAnswers(), KI(enemyQuestion)))
             {
@@ -101,18 +85,51 @@ public class BigJeopardyServlet extends HttpServlet {
                 enemy.addMoney(enemyQuestion.getQuestion().getValue() * -1);
             }
 
-            // frage ausgewaehlt
+            // frage disable setzen
             enemyQuestion.setDisabled(true);
+        }
 
+        String[] answers = request.getParameterValues("answers");
 
-            stats.setAskedQuestions(stats.getAskedQuestions() + 1);
+        if(answers != null) {
+            SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
+
+            if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
+                human.addMoney(currentQuestion.getQuestion().getValue());
+                info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
+            } else {
+                info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
+                human.addMoney(currentQuestion.getQuestion().getValue()*-1);
+            }
+
+            enemyQuestion = (SelectableQuestion) session.getAttribute("currentEnemyQuestion");
+
+            if(enemyQuestion != null) {
+                if (checkCorrectness(enemyQuestion.getQuestion().getCorrectAnswers(), KI(enemyQuestion))) {
+                    enemy.addMoney(enemyQuestion.getQuestion().getValue());
+                    info.setEnemyInfo(true, enemyQuestion.getQuestion().getValue());
+                } else {
+                    info.setEnemyInfo(false, enemyQuestion.getQuestion().getValue());
+                    enemy.addMoney(enemyQuestion.getQuestion().getValue() * -1);
+                }
+            }
+
+            // zuruecksetzen
+            session.setAttribute("currentEnemyQuestion", null);
 
             //hier checken wir ob PC - money kleiner ist als human money
             if(enemy.getMoney() < human.getMoney())
             {
-                //enemy wählt random frage, erst dann wählt human
+                //enemy waehlt random frage, erst dann waehlt human
+                enemyQuestion = chooseRandomQuestion();
 
+                enemyQuestion.setDisabled(true);
+
+                session.setAttribute("currentEnemyQuestion", enemyQuestion);
             }
+
+            info.setEnemyChosenQuestion(enemyQuestion);
+            stats.setAskedQuestions(stats.getAskedQuestions() + 1);
 
             getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
         }
@@ -141,7 +158,7 @@ public class BigJeopardyServlet extends HttpServlet {
         do {
             int id = rnd.nextInt(questionPool.getQlist().size());
             question = questionPool.getQuestion(id == 0 ? 1 : id);
-        } while (!question.isDisabled());
+        } while (question.isDisabled());
 
         return question;
     }
@@ -151,8 +168,7 @@ public class BigJeopardyServlet extends HttpServlet {
         List<String> gewaehlt = new ArrayList<String>();
         Random randy = new Random();
 
-        while(gewaehlt.size() != question.getQuestion().getCorrectAnswers().size())
-        {
+        while(gewaehlt.size() != question.getQuestion().getCorrectAnswers().size()) {
             int zufall = randy.nextInt(question.getQuestion().getAllAnswers().size());
             if(zufall == 0)
             {

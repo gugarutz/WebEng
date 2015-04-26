@@ -1,6 +1,7 @@
 package at.ac.tuwien.big.we15.lab2.api.impl.model.impl;
 
 import at.ac.tuwien.big.we15.lab2.api.Question;
+import at.ac.tuwien.big.we15.lab2.api.SelectableQuestion;
 
 /**
  * Created by Raimund on 26.04.2015.
@@ -42,7 +43,7 @@ public class PlayerInfo {
         return enemyChosenQuestion;
     }
 
-    public void setEnemyChosenQuestion(Question question) {
+    public void setEnemyChosenQuestion(SelectableQuestion question) {
         this.enemyChosenQuestion.setQuestion(question);
     }
 }
