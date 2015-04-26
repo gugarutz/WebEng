@@ -43,6 +43,7 @@ public class LoginServlet extends HttpServlet {
 
         HttpSession session = request.getSession(true);
 
+        // initialisierung
         if (request.getServletPath().equals("/login")) {
             Player human = userDAO.getNewPlayer();
             Avatar humanAvatar = Avatar.getRandomAvatar();
@@ -66,17 +67,7 @@ public class LoginServlet extends HttpServlet {
             QuestionDataProvider dataProvider = new ServletJeopardyFactory(this.getServletContext()).createQuestionDataProvider();
             List<Category> categories = dataProvider.getCategoryData();
 
-            CategoryListBean categoryList = new CategoryListBean();
-
-            for(Category c : categories) {
-                CategoryBean category = new CategoryBean(c.getName());
-
-                for(Question q : c.getQuestions()) {
-                    category.addQuestion(new SimpleSelectableQuestion(q));
-                }
-
-                categoryList.getCategories().add(category);
-            }
+            CategoryListBean categoryList = toCategoryListBean(categories);
 
             session.setAttribute("categories", categoryList);
             session.setAttribute("stats", stats);
@@ -84,5 +75,21 @@ public class LoginServlet extends HttpServlet {
 
             getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
         }
+    }
+
+    private CategoryListBean toCategoryListBean(List<Category> categories) {
+        CategoryListBean categoryList = new CategoryListBean();
+
+        for(Category c : categories) {
+            CategoryBean category = new CategoryBean(c.getName());
+
+            for(Question q : c.getQuestions()) {
+                category.addQuestion(new SimpleSelectableQuestion(q));
+            }
+
+            categoryList.getCategories().add(category);
+        }
+
+        return categoryList;
     }
 }
