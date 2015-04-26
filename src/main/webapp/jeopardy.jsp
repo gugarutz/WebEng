@@ -58,7 +58,7 @@
          <table>
             <tr>
                <th class="accessibility">Spielername</th>
-               <td class="playername"><%= stats.getEnemy().getAvatar().getName()%></td>
+               <td class="playername"><%= stats.getEnemy().getAvatar().getName() %></td>
             </tr>
             <tr>
                 <th class="accessibility">Spielerpunkte</th>
