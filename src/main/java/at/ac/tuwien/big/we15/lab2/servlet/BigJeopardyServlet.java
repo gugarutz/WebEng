@@ -1,19 +1,13 @@
 package at.ac.tuwien.big.we15.lab2.servlet;
 
 
-import at.ac.tuwien.big.we15.lab2.api.Answer;
-import at.ac.tuwien.big.we15.lab2.api.Question;
-import at.ac.tuwien.big.we15.lab2.api.QuestionDataProvider;
+import at.ac.tuwien.big.we15.lab2.api.*;
 import at.ac.tuwien.big.we15.lab2.api.impl.QuestionPool;
 import at.ac.tuwien.big.we15.lab2.api.impl.ServletJeopardyFactory;
-import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.Player;
-import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.PlayerStats;
+import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.*;
 
 import java.util.Random;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,23 +21,20 @@ import java.util.List;
  */
 @WebServlet(name = "BigJeopardyServlet", urlPatterns = {"/jeopardy", "/question"})
 public class BigJeopardyServlet extends HttpServlet {
-    private ServletJeopardyFactory factory;
-    private QuestionDataProvider dataProvider;
     private QuestionPool questionPool;
 
     @Override
-    public void init() throws ServletException {
-        factory = new ServletJeopardyFactory(this.getServletContext());
-        dataProvider = factory.createQuestionDataProvider();
-        questionPool = new QuestionPool(dataProvider.getCategoryData());
-
-        super.init();
-    }
-
-    @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getSession(true).getAttribute("stats") == null)
+        System.out.println("BigJeopardyServlet service called");
+
+        HttpSession session = req.getSession(true);
+
+        if(session.getAttribute("stats") == null) {
             getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
+        } else {
+            CategoryListBean categories = (CategoryListBean)session.getAttribute("categories");
+            questionPool = new QuestionPool(categories.getCategories());
+        }
 
         super.service(req, resp);
     }
@@ -58,7 +49,8 @@ public class BigJeopardyServlet extends HttpServlet {
 
         if(selectedQuestion != null) {
             int questionId = Integer.parseInt(request.getParameter("question_selection"));
-            Question question = questionPool.getQuestion(questionId);
+            SelectableQuestion question = questionPool.getQuestion(questionId);
+            question.setDisabled(true);
 
             session.setAttribute("currentQuestion", question);
 
@@ -72,19 +64,26 @@ public class BigJeopardyServlet extends HttpServlet {
         System.out.println("jeopardy: doGet called");
 
         HttpSession session = request.getSession(false);
+
         String[] answers = request.getParameterValues("answers");
-        Question currentQuestion = (Question)session.getAttribute("currentQuestion");
-        PlayerStats player = (PlayerStats)session.getAttribute("stats");
-        Player enemy = player.getEnemy();
-        Player human = player.getHuman();
 
-        if (checkCorrectness(currentQuestion.getCorrectAnswers(), answers)) {
-           human.setMoney(currentQuestion.getValue());
+        if(answers != null) {
+            SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
+            PlayerStats stats = (PlayerStats)session.getAttribute("stats");
+            PlayerInfo info = (PlayerInfo) session.getAttribute("info");
+            Player enemy = stats.getEnemy();
+            Player human = stats.getHuman();
+
+            if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
+                human.setMoney(currentQuestion.getQuestion().getValue());
+                info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
+            }
+
+            stats.setAskedQuestions(stats.getAskedQuestions() + 1);
+
+            getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
         }
-
-        getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
     }
-
 
     private boolean checkCorrectness(List<Answer> aw, String[] ch) {
         boolean b = true;
@@ -110,6 +109,4 @@ public class BigJeopardyServlet extends HttpServlet {
         }
         return gewaehlt;
     }
-
-
 }

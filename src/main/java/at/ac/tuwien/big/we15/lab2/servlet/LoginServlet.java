@@ -1,10 +1,14 @@
 package at.ac.tuwien.big.we15.lab2.servlet;
 
 import at.ac.tuwien.big.we15.lab2.api.Avatar;
+import at.ac.tuwien.big.we15.lab2.api.Category;
+import at.ac.tuwien.big.we15.lab2.api.Question;
+import at.ac.tuwien.big.we15.lab2.api.QuestionDataProvider;
 import at.ac.tuwien.big.we15.lab2.api.impl.DAO.IUserDao;
 import at.ac.tuwien.big.we15.lab2.api.impl.DAO.impl.UserDAO;
-import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.Player;
-import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.PlayerStats;
+import at.ac.tuwien.big.we15.lab2.api.impl.QuestionPool;
+import at.ac.tuwien.big.we15.lab2.api.impl.ServletJeopardyFactory;
+import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "Login", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
@@ -58,7 +63,24 @@ public class LoginServlet extends HttpServlet {
             stats.setEnemy(enemy);
             stats.setAskedQuestions(0);
 
+            QuestionDataProvider dataProvider = new ServletJeopardyFactory(this.getServletContext()).createQuestionDataProvider();
+            List<Category> categories = dataProvider.getCategoryData();
+
+            CategoryListBean categoryList = new CategoryListBean();
+
+            for(Category c : categories) {
+                CategoryBean category = new CategoryBean(c.getName());
+
+                for(Question q : c.getQuestions()) {
+                    category.addQuestion(new SimpleSelectableQuestion(q));
+                }
+
+                categoryList.getCategories().add(category);
+            }
+
+            session.setAttribute("categories", categoryList);
             session.setAttribute("stats", stats);
+            session.setAttribute("info", new PlayerInfo(human.getName(), enemy.getName()));
 
             getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
         }
