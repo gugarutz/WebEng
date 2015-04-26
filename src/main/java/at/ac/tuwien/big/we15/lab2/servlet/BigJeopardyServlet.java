@@ -9,6 +9,7 @@ import at.ac.tuwien.big.we15.lab2.api.impl.ServletJeopardyFactory;
 import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.Player;
 import at.ac.tuwien.big.we15.lab2.api.impl.model.impl.PlayerStats;
 
+import java.util.Random;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -73,13 +74,17 @@ public class BigJeopardyServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         String[] answers = request.getParameterValues("answers");
         Question currentQuestion = (Question)session.getAttribute("currentQuestion");
+        PlayerStats player = (PlayerStats)session.getAttribute("stats");
+        Player enemy = player.getEnemy();
+        Player human = player.getHuman();
 
         if (checkCorrectness(currentQuestion.getCorrectAnswers(), answers)) {
-            PlayerStats players = (PlayerStats)session.getAttribute("stats");
+           human.setMoney(currentQuestion.getValue());
         }
 
         getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
     }
+
 
     private boolean checkCorrectness(List<Answer> aw, String[] ch) {
         boolean b = true;
@@ -94,6 +99,17 @@ public class BigJeopardyServlet extends HttpServlet {
             b = false;
 
         return b;
+    }
+
+    private String[] KI (List<Answer> allPossible,int anzrichtigeantworten) {
+
+        String[] gewaehlt = new String[anzrichtigeantworten];
+        Random randy = new Random();
+        for(int rand = 0 ; rand < anzrichtigeantworten; rand ++)
+        {
+            gewaehlt[rand] = (allPossible.get(randy.nextInt(allPossible.size())).getId() + "");
+        }
+        return gewaehlt;
     }
 
 
