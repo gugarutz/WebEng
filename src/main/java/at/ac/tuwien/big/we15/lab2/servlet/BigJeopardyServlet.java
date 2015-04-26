@@ -137,18 +137,20 @@ public class BigJeopardyServlet extends HttpServlet {
         }
     }
 
-    //Methode zum ueberpruefen der gewaehlten antworten
+    //Methode zum ueberpruefen der gewaehlten antworten, aw => correct, ch => answered
     private boolean checkCorrectness(List<Answer> aw, String[] ch) {
-        boolean b = true;
+        boolean b = false;
+
         if (aw.size() == ch.length) {
+
             for (String s : ch) {
+
                 for (Answer a : aw) {
-                    if (a.getId() != Integer.parseInt(s))
-                        b = false;
+                    if (a.getId() == Integer.parseInt(s))
+                        b = true;
                 }
             }
-        } else
-            b = false;
+        }
 
         return b;
     }
