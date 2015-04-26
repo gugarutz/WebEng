@@ -102,7 +102,6 @@ public class BigJeopardyServlet extends HttpServlet {
     }
 
     private String[] KI (List<Answer> allPossible,int anzrichtigeantworten) {
-
         String[] gewaehlt = new String[anzrichtigeantworten];
         Random randy = new Random();
         for(int rand = 0 ; rand < anzrichtigeantworten; rand ++)
