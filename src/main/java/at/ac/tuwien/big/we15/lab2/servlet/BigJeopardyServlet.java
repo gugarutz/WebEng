@@ -46,16 +46,19 @@ public class BigJeopardyServlet extends HttpServlet {
         System.out.println("BigJeopardyServlet doPost called");
 
         HttpSession session = request.getSession(false);
-        String selectedQuestion = request.getParameter("question_selection");
 
-        if(selectedQuestion != null) {
-            int questionId = Integer.parseInt(request.getParameter("question_selection"));
-            SelectableQuestion question = questionPool.getQuestion(questionId);
-            question.setDisabled(true);
+        if(request.getServletPath().equals("/jeopardy")) {
+            String selectedQuestion = request.getParameter("question_selection");
 
-            session.setAttribute("currentQuestion", question);
+            if(selectedQuestion != null) {
+                int questionId = Integer.parseInt(request.getParameter("question_selection"));
+                SelectableQuestion question = questionPool.getQuestion(questionId);
+                question.setDisabled(true);
 
-            getServletContext().getRequestDispatcher("/question.jsp").forward(request, response);
+                session.setAttribute("currentQuestion", question);
+
+                getServletContext().getRequestDispatcher("/question.jsp").forward(request, response);
+            }
         }
     }
 
@@ -63,13 +66,14 @@ public class BigJeopardyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("jeopardy: doGet called");
+
         HttpSession session = request.getSession(false);
+
         PlayerStats stats = (PlayerStats)session.getAttribute("stats");
         PlayerInfo info = (PlayerInfo) session.getAttribute("info");
         Player enemy = stats.getEnemy();
         Player human = stats.getHuman();
         SelectableQuestion enemyQuestion = null;
-        
 
         if(enemy.getMoney() >= human.getMoney())
         {
@@ -92,63 +96,65 @@ public class BigJeopardyServlet extends HttpServlet {
 
         String[] answers = request.getParameterValues("answers");
 
-        if(answers != null) {
-            SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
-            enemyQuestion = chooseRandomQuestion();
+        SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
+        enemyQuestion = chooseRandomQuestion();
 
-            if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
+        if(!currentQuestion.isDisabled()) {
+            if (answers != null && checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
                 human.addMoney(currentQuestion.getQuestion().getValue());
                 info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
             } else {
                 info.setHumanInfo(false, currentQuestion.getQuestion().getValue());
-                human.addMoney(currentQuestion.getQuestion().getValue()*-1);
+                human.addMoney(currentQuestion.getQuestion().getValue() * -1);
             }
-
-            enemyQuestion = (SelectableQuestion) session.getAttribute("currentEnemyQuestion");
-
-            if(enemyQuestion != null) {
-                if (checkCorrectness(enemyQuestion.getQuestion().getCorrectAnswers(), KI(enemyQuestion))) {
-                    enemy.addMoney(enemyQuestion.getQuestion().getValue());
-                    info.setEnemyInfo(true, enemyQuestion.getQuestion().getValue());
-                } else {
-                    info.setEnemyInfo(false, enemyQuestion.getQuestion().getValue());
-                    enemy.addMoney(enemyQuestion.getQuestion().getValue() * -1);
-                }
-            }
-
-            // zuruecksetzen
-            session.setAttribute("currentEnemyQuestion", null);
-
-            //hier checken wir ob PC - money kleiner ist als human money
-            if(enemy.getMoney() < human.getMoney())
-            {
-                //enemy waehlt random frage, erst dann waehlt human
-                enemyQuestion = chooseRandomQuestion();
-
-                enemyQuestion.setDisabled(true);
-
-                session.setAttribute("currentEnemyQuestion", enemyQuestion);
-            }
-
-            info.setEnemyChosenQuestion(enemyQuestion);
-            stats.setAskedQuestions(stats.getAskedQuestions() + 1);
-
-            getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
         }
+
+        enemyQuestion = (SelectableQuestion) session.getAttribute("currentEnemyQuestion");
+
+        if(enemyQuestion != null) {
+            if (checkCorrectness(enemyQuestion.getQuestion().getCorrectAnswers(), KI(enemyQuestion))) {
+                enemy.addMoney(enemyQuestion.getQuestion().getValue());
+                info.setEnemyInfo(true, enemyQuestion.getQuestion().getValue());
+            } else {
+                info.setEnemyInfo(false, enemyQuestion.getQuestion().getValue());
+                enemy.addMoney(enemyQuestion.getQuestion().getValue() * -1);
+            }
+        }
+
+        // zuruecksetzen
+        session.setAttribute("currentEnemyQuestion", null);
+
+        //hier checken wir ob PC - money kleiner ist als human money
+        if(enemy.getMoney() < human.getMoney())
+        {
+            //enemy waehlt random frage, erst dann waehlt human
+            enemyQuestion = chooseRandomQuestion();
+
+            enemyQuestion.setDisabled(true);
+
+            session.setAttribute("currentEnemyQuestion", enemyQuestion);
+        }
+
+        info.setEnemyChosenQuestion(enemyQuestion);
+        stats.setAskedQuestions(stats.getAskedQuestions() + 1);
+
+        getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
     }
 
-    //Methode zum ueberpruefen der gewaehlten antworten
+    //Methode zum ueberpruefen der gewaehlten antworten, aw => correct, ch => answered
     private boolean checkCorrectness(List<Answer> aw, String[] ch) {
-        boolean b = true;
+        boolean b = false;
+
         if (aw.size() == ch.length) {
+
             for (String s : ch) {
+
                 for (Answer a : aw) {
-                    if (a.getId() != Integer.parseInt(s))
-                        b = false;
+                    if (a.getId() == Integer.parseInt(s))
+                        b = true;
                 }
             }
-        } else
-            b = false;
+        }
 
         return b;
     }
