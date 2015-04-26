@@ -70,7 +70,7 @@ public class BigJeopardyServlet extends HttpServlet {
 
         if(enemy.getMoney() >= human.getMoney())
         {
-            //human hat bereits gew√§hlt, enemy w√§hlt jetzt
+            //human hat bereits gew‰hlt, enemy w‰hlt jetzt
 
         }
 
@@ -78,17 +78,11 @@ public class BigJeopardyServlet extends HttpServlet {
 
         if(answers != null) {
             SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
+            SelectableQuestion enemyQuestion = chooseRandomQuestion();
+
+            PlayerStats stats = (PlayerStats)session.getAttribute("stats");
             PlayerInfo info = (PlayerInfo) session.getAttribute("info");
 
-            if(checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(),KI(currentQuestion.getQuestion().getAllAnswers(),currentQuestion.getQuestion().getCorrectAnswers().size())))
-            {
-                enemy.addMoney(currentQuestion.getQuestion().getValue());
-                info.setEnemyInfo(true,currentQuestion.getQuestion().getValue());
-            }
-            else {
-                info.setEnemyInfo(false,currentQuestion.getQuestion().getValue());
-                enemy.addMoney(currentQuestion.getQuestion().getValue()*-1);
-            }
             if (checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(), answers)) {
                 human.addMoney(currentQuestion.getQuestion().getValue());
                 info.setHumanInfo(true, currentQuestion.getQuestion().getValue());
@@ -97,12 +91,26 @@ public class BigJeopardyServlet extends HttpServlet {
                 human.addMoney(currentQuestion.getQuestion().getValue()*-1);
             }
 
+            if (checkCorrectness(enemyQuestion.getQuestion().getCorrectAnswers(), KI(enemyQuestion)))
+            {
+                enemy.addMoney(enemyQuestion.getQuestion().getValue());
+                info.setEnemyInfo(true, enemyQuestion.getQuestion().getValue());
+            }
+            else {
+                info.setEnemyInfo(false, enemyQuestion.getQuestion().getValue());
+                enemy.addMoney(enemyQuestion.getQuestion().getValue() * -1);
+            }
+
+            // frage ausgewaehlt
+            enemyQuestion.setDisabled(true);
+
+
             stats.setAskedQuestions(stats.getAskedQuestions() + 1);
 
             //hier checken wir ob PC - money kleiner ist als human money
             if(enemy.getMoney() < human.getMoney())
             {
-                //enemy w√§hlt random frage, erst dann w√§hlt human
+                //enemy w‰hlt random frage, erst dann w‰hlt human
 
             }
 
@@ -110,7 +118,7 @@ public class BigJeopardyServlet extends HttpServlet {
         }
     }
 
-    //Methode zum ÔøΩberprÔøΩfen der gewÔøΩhlten antworten
+    //Methode zum ueberpruefen der gewaehlten antworten
     private boolean checkCorrectness(List<Answer> aw, String[] ch) {
         boolean b = true;
         if (aw.size() == ch.length) {
@@ -126,14 +134,26 @@ public class BigJeopardyServlet extends HttpServlet {
         return b;
     }
 
-    // methode erzeugt computergenerierte Antworten
-    private String[] KI (List<Answer> allPossible,int anzrichtigeantworten) {
+    private SelectableQuestion chooseRandomQuestion() {
+        SelectableQuestion question = null;
+        Random rnd = new Random();
 
+        do {
+            int id = rnd.nextInt(questionPool.getQlist().size());
+            question = questionPool.getQuestion(id == 0 ? 1 : id);
+        } while (!question.isDisabled());
+
+        return question;
+    }
+
+    // methode erzeugt computergenerierte Antworten
+    private String[] KI (SelectableQuestion question) {
         List<String> gewaehlt = new ArrayList<String>();
         Random randy = new Random();
-        while(gewaehlt.size() != anzrichtigeantworten)
+
+        while(gewaehlt.size() != question.getQuestion().getCorrectAnswers().size())
         {
-            int zufall = randy.nextInt(allPossible.size());
+            int zufall = randy.nextInt(question.getQuestion().getAllAnswers().size());
             if(zufall == 0)
             {
                 zufall ++;
@@ -147,6 +167,5 @@ public class BigJeopardyServlet extends HttpServlet {
         String[] forreturn = new String[gewaehlt.size()];
         gewaehlt.toArray(forreturn);
         return forreturn;
-
     }
 }
