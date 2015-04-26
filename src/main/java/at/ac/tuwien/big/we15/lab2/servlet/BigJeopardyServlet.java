@@ -170,28 +170,39 @@ public class BigJeopardyServlet extends HttpServlet {
             question = questionPool.getQuestion(id == 0 ? 1 : id);
         } while (question.isDisabled());
 
+
         return question;
     }
 
     // methode erzeugt computergenerierte Antworten
     private String[] KI (SelectableQuestion question) {
-        List<String> gewaehlt = new ArrayList<String>();
-        Random randy = new Random();
 
-        while(gewaehlt.size() != question.getQuestion().getCorrectAnswers().size()) {
-            int zufall = randy.nextInt(question.getQuestion().getAllAnswers().size());
-            if(zufall == 0)
+        Random randy = new Random();
+        List<String> gewaehlt = new ArrayList<String>();
+        int zuf = randy.nextInt(10);
+        if((zuf%2) == 0) {
+            for(Answer a : question.getQuestion().getCorrectAnswers())
             {
-                zufall ++;
+               gewaehlt.add(a.getId()+"");
             }
-            String addit = (zufall+"");
-            if(!gewaehlt.contains(addit))
-            {
-                gewaehlt.add(addit);
-            }
+            String[] forreturn = new String[gewaehlt.size()];
+            gewaehlt.toArray(forreturn);
+            return forreturn;
         }
-        String[] forreturn = new String[gewaehlt.size()];
-        gewaehlt.toArray(forreturn);
-        return forreturn;
+        else {
+            while (gewaehlt.size() != question.getQuestion().getCorrectAnswers().size()) {
+                int zufall = randy.nextInt(question.getQuestion().getAllAnswers().size());
+                if (zufall == 0) {
+                    zufall++;
+                }
+                String addit = (zufall + "");
+                if (!gewaehlt.contains(addit)) {
+                    gewaehlt.add(addit);
+                }
+            }
+            String[] forreturn = new String[gewaehlt.size()];
+            gewaehlt.toArray(forreturn);
+            return forreturn;
+        }
     }
 }
