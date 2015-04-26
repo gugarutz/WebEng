@@ -57,4 +57,24 @@ public class LoginServlet extends HttpServlet {
             getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
         }
     }
+
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response) throws ServletException, IOException {
+
+        System.out.println("login: doGet called");
+
+        String redirectResource = "/login.jsp";
+
+        HttpSession session = request.getSession(false);
+
+        if (request.getServletPath().equals("/login")) {
+            if (session != null && session.getAttribute("user") != null) {
+                redirectResource = "/BigJeopardyServlet";
+            }
+
+            response.setCharacterEncoding("UTF-8");
+
+            getServletContext().getRequestDispatcher(redirectResource).forward(request, response);
+        }
+    }
 }
