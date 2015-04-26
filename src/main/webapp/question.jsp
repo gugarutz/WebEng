@@ -71,7 +71,7 @@
       <section id="question" aria-labelledby="questionheading">
             <form id="questionform" action="jeopardy" method="get">
                <h2 id="questionheading" class="accessibility">Frage</h2>
-               <p id="questiontype"><%= String.format("%s für &euro; %s", currentQuestion.getCategory(), currentQuestion.getValue() )%></p>
+               <p id="questiontype"><%= String.format("%s für &euro; %s", currentQuestion.getCategory().getName(), currentQuestion.getValue() )%></p>
                <p id="questiontext"><%= currentQuestion.getText() %></p>
                <ul id="answers">
                    <% for(Answer a : currentQuestion.getAllAnswers()) { %>
