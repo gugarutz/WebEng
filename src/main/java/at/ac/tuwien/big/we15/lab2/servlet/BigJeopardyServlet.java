@@ -44,16 +44,18 @@ public class BigJeopardyServlet extends HttpServlet {
         HttpSession session = request.getSession(true);
         RequestDispatcher dispatcher = null;
 
-        String target = "/jeopardy.jsp";
+        String target = "/login";
 
-        if (request.getServletPath().equals("/question")) {
+        if (session != null) {
+            if (request.getServletPath().equals("/question")) {
 
-            int questionId = Integer.parseInt(request.getParameter("question_selection"));
-            Question question = questionPool.getQuestion(questionId);
+                int questionId = Integer.parseInt(request.getParameter("question_selection"));
+                Question question = questionPool.getQuestion(questionId);
 
-            target = "/question.jsp";
+                target = "/question.jsp";
 
-            session.setAttribute("question", question);
+                session.setAttribute("question", question);
+            }
         }
 
         dispatcher = getServletContext().getRequestDispatcher(target);
