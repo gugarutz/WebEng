@@ -56,6 +56,9 @@ public class BigJeopardyServlet extends HttpServlet {
 
                 session.setAttribute("question", question);
             }
+            else {
+                target = "/jeopardy.jsp";
+            }
         }
 
         dispatcher = getServletContext().getRequestDispatcher(target);
