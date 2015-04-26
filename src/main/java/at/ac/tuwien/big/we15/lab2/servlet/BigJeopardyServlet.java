@@ -63,17 +63,22 @@ public class BigJeopardyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("jeopardy: doGet called");
-
         HttpSession session = request.getSession(false);
+        PlayerStats stats = (PlayerStats)session.getAttribute("stats");
+        Player enemy = stats.getEnemy();
+        Player human = stats.getHuman();
+        
+        if(enemy.getMoney() >= human.getMoney())
+        {
+            //human hat bereits gewählt, enemy wählt jetzt
+
+        }
 
         String[] answers = request.getParameterValues("answers");
 
         if(answers != null) {
             SelectableQuestion currentQuestion = (SelectableQuestion)session.getAttribute("currentQuestion");
-            PlayerStats stats = (PlayerStats)session.getAttribute("stats");
             PlayerInfo info = (PlayerInfo) session.getAttribute("info");
-            Player enemy = stats.getEnemy();
-            Player human = stats.getHuman();
 
             if(checkCorrectness(currentQuestion.getQuestion().getCorrectAnswers(),KI(currentQuestion.getQuestion().getAllAnswers(),currentQuestion.getQuestion().getCorrectAnswers().size())))
             {
@@ -93,6 +98,13 @@ public class BigJeopardyServlet extends HttpServlet {
             }
 
             stats.setAskedQuestions(stats.getAskedQuestions() + 1);
+
+            //hier checken wir ob PC - money kleiner ist als human money
+            if(enemy.getMoney() < human.getMoney())
+            {
+                //enemy wählt random frage, erst dann wählt human
+
+            }
 
             getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
         }
