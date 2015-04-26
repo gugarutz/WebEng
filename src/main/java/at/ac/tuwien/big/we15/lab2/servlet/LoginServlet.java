@@ -48,10 +48,15 @@ public class LoginServlet extends HttpServlet {
 
         String redirectResource = "/login.jsp";
 
+        HttpSession session = request.getSession(false);
+
         if (request.getServletPath().equals("/login")) {
 
-            if (request.getSession(false) != null) {
-                redirectResource = "/BigJeopardyServlet";
+            if (session != null) {
+                if (session.getAttribute("user") != null) {
+                    System.out.println("login: session vorhanden");
+                    redirectResource = "/BigJeopardyServlet";
+                }
             }
 
             response.setCharacterEncoding("UTF-8");

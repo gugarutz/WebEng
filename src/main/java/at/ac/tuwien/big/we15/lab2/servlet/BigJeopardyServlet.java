@@ -29,7 +29,7 @@ public class BigJeopardyServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Jeopardy service called");
+        System.out.println("jeopardy: service called");
 
         factory = new ServletJeopardyFactory(this.getServletContext());
         dataProvider = factory.createQuestionDataProvider();
@@ -39,7 +39,7 @@ public class BigJeopardyServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Jeopardy doPost called");
+        System.out.println("jeopardy: doPost called");
 
         HttpSession session = request.getSession(true);
         RequestDispatcher dispatcher = null;
@@ -68,7 +68,7 @@ public class BigJeopardyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Jeopardy doGet called");
+        System.out.println("jeopardy: doGet called");
 
         HttpSession session = request.getSession(true);
         RequestDispatcher dispatcher = null;
