@@ -1,4 +1,5 @@
 <jsp:useBean id="stats" class="at.ac.tuwien.big.we15.lab2.api.impl.model.impl.PlayerStats" scope="session" />
+<jsp:useBean id="info" class="at.ac.tuwien.big.we15.lab2.api.impl.model.impl.PlayerInfo" scope="session" />
 
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
@@ -44,7 +45,7 @@
             </tr>
             <tr>
                <th class="accessibility">Spielerpunkte</th>
-               <td class="playerpoints"><%= stats.getHuman().getMoney() %></td>
+               <td class="playerpoints"><%= stats.getHuman().getMoney() %> &euro;</td>
             </tr>
          </table>
       </section>
@@ -58,7 +59,7 @@
             </tr>
             <tr>
                <th class="accessibility">Spielerpunkte</th>
-               <td class="playerpoints"><%= stats.getEnemy().getMoney() %> €</td>
+               <td class="playerpoints"><%= stats.getEnemy().getMoney() %> &euro;</td>
             </tr>
          </table>
       </section>
@@ -68,7 +69,7 @@
    <!-- Question -->
    <section id="question-selection" aria-labelledby="questionheading">
       <h2 id="questionheading" class="black accessibility">Jeopardy</h2>
-      <p class="user-info positive-change">Du hast richtig geantwortet: +1000 €</p>
+      <p class="user-info positive-change"><%= info.getHumanInfo()%></p>
       <p class="user-info negative-change">Deadpool hat falsch geantwortet: -500 €</p>
       <p class="user-info">Deadpool hat TUWIEN für € 1000 gewählt.</p>
       <form id="questionform" action="jeopardy" method="post">
@@ -124,7 +125,7 @@
             </section>
          </fieldset>
          <input type="hidden" name="action" value="jeopardy" />
-         <input class="greenlink formlink clickable" name="question_submit" id="next" type="submit" value="wählen" accesskey="s" />
+         <input class="greenlink formlink clickable" name="question_submit" id="next" type="submit" value="w&auml;hlen" accesskey="s" />
       </form>
    </section>
 
@@ -135,7 +136,7 @@
 </div>
 
 <!-- footer -->
-<footer role="contentinfo">© 2015 BIG Jeopardy!</footer>
+<footer role="contentinfo">&copy; 2015 BIG Jeopardy!</footer>
 
 <script type="text/javascript">
    //<![CDATA[

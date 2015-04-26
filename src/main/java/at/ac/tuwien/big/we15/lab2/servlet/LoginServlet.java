@@ -63,9 +63,4 @@ public class LoginServlet extends HttpServlet {
             getServletContext().getRequestDispatcher("/jeopardy.jsp").forward(request, response);
         }
     }
-
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
-
-    }
 }
